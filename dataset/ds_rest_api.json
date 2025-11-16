@@ -1,0 +1,13 @@
+{
+	"name": "ds_rest_api",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "rest_pokemon",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,9 @@
+{
+	"name": "adf-demo-pravin",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "77bbf594-b30d-40c7-9def-63d406f9efa1",
+		"tenantId": "840dbb1d-a565-49fc-ad41-bcecafe780f1"
+	}
+}

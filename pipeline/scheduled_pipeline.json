@@ -1,0 +1,30 @@
+{
+	"name": "scheduled_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "inegesting_data",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "order_ingestion",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"schema": "source",
+						"table": "Orders"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-11-15T18:56:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

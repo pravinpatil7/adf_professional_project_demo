@@ -1,0 +1,34 @@
+{
+	"name": "ds_dynamic_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adf_demo_pravin",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_container": {
+				"type": "string"
+			},
+			"p_folder": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().p_folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().p_container",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

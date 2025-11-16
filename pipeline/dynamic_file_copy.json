@@ -1,0 +1,192 @@
+{
+	"name": "dynamic_file_copy",
+	"properties": {
+		"activities": [
+			{
+				"name": "metadata_files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_dynamic_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"p_container": "source",
+							"p_folder": "files"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "JsonReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEachFile",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "metadata_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('metadata_files').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "file_name",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_file_name",
+								"value": {
+									"value": "@split(item().name,'.')[0]",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "folder_name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "file_name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_folder_name",
+								"value": {
+									"value": "@split(variables('v_file_name'),'_')[0]",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy_files",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "folder_name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_dynamic_json_files",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_file_name": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"p_folder_name": "files",
+										"p_container_name": "source"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_dynamic_json_files",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_file_name": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"p_folder_name": {
+											"value": "@variables('v_folder_name')",
+											"type": "Expression"
+										},
+										"p_container_name": "sink"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_file_name": {
+				"type": "String"
+			},
+			"v_file_folder_format": {
+				"type": "String"
+			},
+			"v_folder_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-11-16T15:48:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

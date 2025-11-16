@@ -1,0 +1,23 @@
+{
+	"name": "csv_from_git",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "github_source",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "pravinpatil7/adf_demo/refs/heads/main/raw_data/top_tech_companies_2.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
